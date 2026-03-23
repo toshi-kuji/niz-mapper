@@ -23,20 +23,21 @@
 ## 2. プロトコル解析・データ準備
 
 ### cho45/niz-tools-ruby の解析
-- [ ] `niz.rb` を読み、NIZ通信プロトコルの全体像を把握
-  - [ ] `open` メソッド: 初期化コマンドのバイト列を特定
-  - [ ] `version` メソッド: バージョン取得コマンドとレスポンス形式を特定
-  - [ ] `read_all` メソッド: キーマップ読み取りの流れを理解（キーID×レベルIDの組み合わせ）
-  - [ ] `write_all` メソッド: キーマップ書き込みの流れを理解（全リセット→全書き込み）
-  - [ ] 各コマンドのバイト列とレスポンスフォーマットをドキュメント化
+- [x] `niz.rb` を読み、NIZ通信プロトコルの全体像を把握
+  - [x] `open` メソッド: VID `0x0483` / PID `0x512A` で接続、version取得で初期化
+  - [x] `version` メソッド: `0xf9` 送信 → バージョン文字列受信、先頭数字がキー数
+  - [x] `read_all` メソッド: `0xf2` 送信 → キー数×3レイヤー分のデータをループ受信
+  - [x] `write_all` メソッド: `0xf1` で全リセット → `0xf0` で1キーずつ送信 → `0xf6` で終了
+  - [x] 各コマンドのバイト列とレスポンスフォーマットをドキュメント化 → `docs/niz-protocol-spec.md`
 
 ### 静的データファイルの作成
-- [ ] `public/data/hwcodes.json` を作成: cho45氏のHWCODEマッピングをJSON化
-  - 各エントリに `name`, `category` (basic/modifier/media/function等), `usb` (USB HIDスキャンコード) を含める
-- [ ] `public/data/niz-l84.json` を作成: Niz L84のキーボード定義
-  - `device`: id, name, manufacturer, vendorId (`0x0483`), productId (`0x5710`), keyCount (84)
-  - `layout.keys[]`: 各キーの `id`, `x`, `y`, `width`, `height`, `label`
-  - Niz L84の物理レイアウトを正確に反映する（キーサイズ・位置をユニット単位で定義）
+- [x] `public/data/hwcodes.json` を作成: cho45氏のHWCODEマッピングをJSON化
+  - 各エントリに `name`, `category` (basic/modifier/function/navigation/numpad/media/mouse/backlight/setting/system) を含める
+- [x] `public/data/niz-l84.json` を作成: Niz L84のキーボード定義
+  - `device`: id, name, manufacturer, vendorId, productId, keyCount
+  - `layout.keys[]`: 85キー分の `id`, `x`, `y`, `width`, `height`, `label`
+  - **要実機確認**: 物理85キー vs モデル名L84 の差異（スプリットスペースバーが1 key_id?）
+  - **要実機確認**: key_id（仮番号）と実際のファームウェアkey_idのマッピング
 
 ## 3. WebHID通信モジュールの実装
 
@@ -53,6 +54,9 @@
 - [ ] `writeKeymap(device, keymap, onProgress)`: 全キーマップ書き込み（全リセット→全書き込み、プログレスコールバック付き）
 
 ### 接続テスト
+- [ ] Niz L84 の実際の Product ID を実機で確認（cho45氏のコードでは `0x512A`、開発ガイドでは `0x5710`）
+- [ ] 実機で `read_all` し、ファームウェアのキー数を確認（物理85キー vs モデル名L84 の差異を解消。スプリットスペースバーが2つの独立した key_id を持つか確認）
+- [ ] ファームウェアの key_id と物理キー位置のマッピングを確定（`niz-l84.json` の仮番号を実際の key_id に更新）
 - [ ] 最小限のテストページで Niz L84 に接続できることを確認
 - [ ] バージョン情報の取得が成功することを確認
 - [ ] キーマップの読み取りが成功し、コンソールでデータを確認
