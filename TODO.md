@@ -8,11 +8,17 @@
 - [x] 依存関係インストール済み (pnpm)
 - [x] `.gitignore` にNode.js/Astro用の除外設定
 - [x] Gitリポジトリ初期化・初回コミット済み
-- [ ] GitHub Pagesデプロイ用のAstro設定 (`astro.config.mjs` に `site`, `base` 設定)
-- [ ] GitHub Actions ワークフロー作成 (`.github/workflows/deploy.yml`, `withastro/action` 使用)
-- [ ] GitHubリモートリポジトリを作成し、push
-- [ ] GitHub Pages の設定を有効化（Settings → Pages → GitHub Actions）
-- [ ] 空のAstroサイトがGitHub Pagesにデプロイされることを確認
+- [x] GitHub Pagesデプロイ用のAstro設定 (`astro.config.mjs` に `site`, `base` 設定)
+- [x] GitHub Actions ワークフロー作成 (`.github/workflows/deploy.yml`, `withastro/action` 使用)
+- [x] GitHubリモートリポジトリを作成し、push (public: GitHub Pages無料プラン要件)
+- [x] GitHub Pages の設定を有効化（Settings → Pages → GitHub Actions）
+- [x] 空のAstroサイトがGitHub Pagesにデプロイされることを確認
+
+## 1.5. 法務・ライセンス確認
+
+- [x] cho45/niz-tools-ruby のライセンスを確認（ライセンス未指定 → コード非コピー方針を明記）
+- [x] README に Legal セクション作成（免責・相互運用性・商標・Acknowledgments・Takedown窓口）
+- [x] MIT License を追加（LICENSE ファイル）
 
 ## 2. プロトコル解析・データ準備
 
