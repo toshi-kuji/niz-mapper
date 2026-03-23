@@ -42,6 +42,7 @@
 ## 3. WebHID通信モジュールの実装
 
 ### 基盤となるヘルパー
+WebHID APIを使ったUSB通信の低レベル基盤を作る。デバイスの接続確立、コマンド送受信のPromiseラッパー、デバッグ用のバイト列ログ出力など、以降の全ての通信処理が依存する土台。
 - [ ] `src/lib/niz-hid.js` を作成
 - [ ] `navigator.hid` のサポートチェック関数
 - [ ] `connectDevice()`: Niz L84への接続（vendorId/productIdフィルタ付き `requestDevice`→`open`）
@@ -49,11 +50,13 @@
 - [ ] `logBytes(label, bytes)`: 送受信バイト列の16進数ログ出力
 
 ### NIZプロトコル操作
+ヘルパーの上に、NIZ固有のプロトコルコマンドを実装する。`docs/niz-protocol-spec.md` のバイト列仕様に従い、バージョン取得・キーマップ読み書きの関数を作る。
 - [ ] `getVersion(device)`: バージョン情報取得コマンド送信・レスポンス解析
-- [ ] `readKeymap(device, onProgress)`: 全キーマップ読み取り（198回ループ、プログレスコールバック付き）
+- [ ] `readKeymap(device, onProgress)`: 全キーマップ読み取り（キー数×3レイヤー回ループ、プログレスコールバック付き）
 - [ ] `writeKeymap(device, keymap, onProgress)`: 全キーマップ書き込み（全リセット→全書き込み、プログレスコールバック付き）
 
 ### 接続テスト
+上で作ったモジュールを使い、実機に接続してコンソール上でデータを確認する。ここで Product ID やキー数など、実機でしか分からない情報を確定させ、定義ファイルを修正する。
 - [ ] Niz L84 の実際の Product ID を実機で確認（cho45氏のコードでは `0x512A`、開発ガイドでは `0x5710`）
 - [ ] 実機で `read_all` し、ファームウェアのキー数を確認（物理85キー vs モデル名L84 の差異を解消。スプリットスペースバーが2つの独立した key_id を持つか確認）
 - [ ] ファームウェアの key_id と物理キー位置のマッピングを確定（`niz-l84.json` の仮番号を実際の key_id に更新）
